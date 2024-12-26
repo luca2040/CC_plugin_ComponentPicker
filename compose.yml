@@ -10,3 +10,11 @@ services:
       - ./cat/static:/app/cat/static
       - ./cat/plugins:/app/cat/plugins
       - ./cat/data:/app/cat/data
+
+  json-server:
+    image: testimio/jsonplaceholder:latest
+    container_name: json-server
+    volumes:
+      - ./api/components.json:/usr/src/app/data.json
+    ports:
+      - 3024:3000

@@ -1,0 +1,432 @@
+{
+  "Components": {
+    "Active": {
+      "Diodes": {
+        "Rectifier Diodes": {
+          "1N4007": {
+            "type": "Rectifier",
+            "voltage_rating": "1000V",
+            "current_rating": "1A",
+            "application": "General-purpose rectification"
+          },
+          "1N5408": {
+            "type": "Rectifier",
+            "voltage_rating": "1000V",
+            "current_rating": "3A",
+            "application": "Heavy-duty rectification"
+          }
+        },
+        "Zener Diodes": {
+          "1N4733A": {
+            "type": "Zener",
+            "voltage_rating": "5.1V",
+            "power_rating": "1W",
+            "application": "Voltage regulation"
+          },
+          "BZX55C5V1": {
+            "type": "Zener",
+            "voltage_rating": "5.1V",
+            "power_rating": "0.5W",
+            "application": "Voltage regulation"
+          }
+        },
+        "Light Emitting Diodes (LEDs)": {
+          "Red LED": {
+            "voltage_rating": "2.0V",
+            "current_rating": "20mA",
+            "application": "General-purpose lighting"
+          },
+          "Blue LED": {
+            "voltage_rating": "3.1V",
+            "current_rating": "20mA",
+            "application": "Display lighting"
+          },
+          "RGB LED": {
+            "voltage_rating": "2.0V (Red), 3.0V (Green), 3.2V (Blue)",
+            "current_rating": "20mA",
+            "application": "Color mixing and displays"
+          }
+        },
+        "Schottky Diodes": {
+          "1N5819": {
+            "type": "Schottky",
+            "voltage_rating": "40V",
+            "current_rating": "1A",
+            "application": "Low-voltage rectification"
+          },
+          "SS34": {
+            "type": "Schottky",
+            "voltage_rating": "40V",
+            "current_rating": "3A",
+            "application": "Power conversion"
+          }
+        },
+        "Fast Recovery Diodes": {
+          "UF4007": {
+            "type": "Fast Recovery",
+            "voltage_rating": "1000V",
+            "current_rating": "1A",
+            "application": "High-speed switching"
+          },
+          "BYV27-200": {
+            "type": "Fast Recovery",
+            "voltage_rating": "200V",
+            "current_rating": "3A",
+            "application": "Power electronics"
+          }
+        }
+      },
+      "Transistors": {
+        "BJT": {
+          "Normal BJT": {
+            "NPN": {
+              "2N2222": {
+                "type": "NPN",
+                "voltage_rating": "40V",
+                "current_rating": "800mA",
+                "application": "General-purpose switching"
+              },
+              "BC547": {
+                "type": "NPN",
+                "voltage_rating": "45V",
+                "current_rating": "100mA",
+                "application": "Amplification"
+              }
+            },
+            "PNP": {
+              "BC557": {
+                "type": "PNP",
+                "voltage_rating": "45V",
+                "current_rating": "100mA",
+                "application": "Amplification"
+              },
+              "2N2907": {
+                "type": "PNP",
+                "voltage_rating": "40V",
+                "current_rating": "600mA",
+                "application": "Switching and amplification"
+              }
+            }
+          },
+          "Darlington": {
+            "TIP120": {
+              "type": "NPN Darlington",
+              "voltage_rating": "60V",
+              "current_rating": "5A",
+              "application": "Power switching"
+            },
+            "TIP125": {
+              "type": "PNP Darlington",
+              "voltage_rating": "60V",
+              "current_rating": "5A",
+              "application": "Power switching"
+            }
+          }
+        },
+        "MOSFET": {
+          "N-Channel": {
+            "IRFZ44N": {
+              "type": "N-Channel",
+              "voltage_rating": "55V",
+              "current_rating": "49A",
+              "application": "High-speed switching"
+            },
+            "IRLZ34N": {
+              "type": "N-Channel",
+              "voltage_rating": "55V",
+              "current_rating": "30A",
+              "application": "Switching and motor control"
+            }
+          },
+          "P-Channel": {
+            "IRF4905": {
+              "type": "P-Channel",
+              "voltage_rating": "55V",
+              "current_rating": "74A",
+              "application": "Power switching"
+            }
+          }
+        }
+      },
+      "Integrated Circuits (ICs)": {
+        "Op-Amps": {
+          "LM741": {
+            "type": "Op-Amp",
+            "voltage_rating": "±18V",
+            "current_rating": "5mA",
+            "application": "Signal amplification"
+          },
+          "TL081": {
+            "type": "Op-Amp",
+            "voltage_rating": "±18V",
+            "current_rating": "3mA",
+            "application": "Low-noise amplification"
+          }
+        },
+        "Voltage Regulators": {
+          "7805": {
+            "type": "Linear Regulator",
+            "output_voltage": "5V",
+            "current_rating": "1A",
+            "application": "Power regulation"
+          },
+          "LM317": {
+            "type": "Adjustable Regulator",
+            "output_voltage_range": "1.25V to 37V",
+            "current_rating": "1.5A",
+            "application": "Adjustable voltage regulation"
+          }
+        },
+        "Timers": {
+          "NE555": {
+            "type": "Timer IC",
+            "voltage_rating": "4.5V to 15V",
+            "current_rating": "200mA",
+            "application": "Pulse generation"
+          }
+        },
+        "Microcontrollers": {
+          "ATmega328P": {
+            "type": "Microcontroller",
+            "clock_speed": "16MHz",
+            "voltage_rating": "2.7V to 5.5V",
+            "application": "Embedded systems"
+          },
+          "ESP32": {
+            "type": "Microcontroller",
+            "clock_speed": "240MHz",
+            "voltage_rating": "3.3V",
+            "application": "Wireless communication"
+          }
+        }
+      }
+    },
+    "Passive": {
+      "Resistors": {
+        "Fixed Resistors": {
+          "1 kΩ": {
+            "type": "Fixed",
+            "resistance": "1 kΩ",
+            "power_rating": "1/4 W",
+            "application": "General-purpose"
+          },
+          "10 kΩ": {
+            "type": "Fixed",
+            "resistance": "10 kΩ",
+            "power_rating": "1/4 W",
+            "application": "General-purpose"
+          }
+        },
+        "Variable Resistors (Potentiometers)": {
+          "10 kΩ Linear Potentiometer": {
+            "type": "Potentiometer",
+            "resistance": "10 kΩ",
+            "application": "Adjustable resistance"
+          },
+          "100 kΩ Trimmer": {
+            "type": "Trimmer",
+            "resistance": "100 kΩ",
+            "application": "Precise adjustment"
+          }
+        },
+        "Photoresistors (LDR)": {
+          "GL5528": {
+            "type": "LDR",
+            "resistance_range": "10 kΩ to 10 MΩ",
+            "application": "Light sensing"
+          }
+        }
+      },
+      "Capacitors": {
+        "Electrolytic Capacitors": {
+          "10 µF": {
+            "type": "Electrolytic",
+            "capacitance": "10 µF",
+            "voltage_rating": "25V",
+            "application": "Power filtering"
+          },
+          "100 µF": {
+            "type": "Electrolytic",
+            "capacitance": "100 µF",
+            "voltage_rating": "16V",
+            "application": "Power supply filtering"
+          }
+        },
+        "Ceramic Capacitors": {
+          "0.1 µF": {
+            "type": "Ceramic",
+            "capacitance": "0.1 µF",
+            "voltage_rating": "50V",
+            "application": "Decoupling"
+          },
+          "1 µF": {
+            "type": "Ceramic",
+            "capacitance": "1 µF",
+            "voltage_rating": "50V",
+            "application": "Decoupling"
+          }
+        },
+        "Tantalum Capacitors": {
+          "10 µF": {
+            "type": "Tantalum",
+            "capacitance": "10 µF",
+            "voltage_rating": "35V",
+            "application": "Power filtering"
+          }
+        }
+      },
+      "Inductors": {
+        "Air Core": {
+          "10 µH": {
+            "type": "Air Core",
+            "inductance": "10 µH",
+            "application": "General-purpose inductance"
+          }
+        },
+        "Ferrite Core": {
+          "Toroidal Ferrite": {
+            "type": "Ferrite Core",
+            "inductance": "10 µH",
+            "application": "RF and power applications"
+          },
+          "Drum Core": {
+            "type": "Ferrite Core",
+            "inductance": "470 µH",
+            "application": "Signal filtering"
+          }
+        },
+        "Laminated Core": {
+          "10 mH": {
+            "type": "Laminated Core",
+            "inductance": "10 mH",
+            "application": "Power transformers"
+          }
+        }
+      },
+      "Transformers": {
+        "Normal Core Transformers": {
+          "Low Frequency": {
+            "10:1": {
+              "type": "Normal Core",
+              "winding_ratio": "10:1",
+              "application": "Power supply conversion"
+            },
+            "1:1": {
+              "type": "Normal Core",
+              "winding_ratio": "1:1",
+              "application": "Isolation"
+            }
+          },
+          "High Frequency": {
+            "10:10": {
+              "type": "Normal Core",
+              "winding_ratio": "10:10",
+              "application": "High-frequency switching"
+            },
+            "2:10": {
+              "type": "Normal Core",
+              "winding_ratio": "2:10",
+              "application": "Power conversion"
+            }
+          }
+        },
+        "Ferrite Core Transformers": {
+          "Low Frequency": {
+            "5:1": {
+              "type": "Ferrite Core",
+              "winding_ratio": "5:1",
+              "application": "Power regulation"
+            }
+          },
+          "High Frequency": {
+            "20:1": {
+              "type": "Ferrite Core",
+              "winding_ratio": "20:1",
+              "application": "High-frequency conversion"
+            },
+            "1:1": {
+              "type": "Ferrite Core",
+              "winding_ratio": "1:1",
+              "application": "Signal isolation"
+            }
+          }
+        }
+      }
+    },
+    "Connectors": {
+      "Header Pins": {
+        "Male Header": {
+          "type": "Header",
+          "pitch": "2.54 mm",
+          "application": "General-purpose connections"
+        },
+        "Female Header": {
+          "type": "Header",
+          "pitch": "2.54 mm",
+          "application": "General-purpose connections"
+        }
+      },
+      "USB Connectors": {
+        "USB Type-A": {
+          "type": "USB",
+          "application": "Data and power transmission"
+        },
+        "USB Type-C": {
+          "type": "USB",
+          "application": "Data and power transmission"
+        }
+      },
+      "Terminals": {
+        "Screw Terminals": {
+          "type": "Terminal",
+          "application": "Wire termination"
+        },
+        "Spring Terminals": {
+          "type": "Terminal",
+          "application": "Wire termination"
+        }
+      }
+    },
+    "Sensors": {
+      "Temperature Sensors": {
+        "LM35": {
+          "type": "Temperature",
+          "measurement_range": "-55°C to 150°C",
+          "application": "Temperature sensing"
+        },
+        "DS18B20": {
+          "type": "Temperature",
+          "measurement_range": "-55°C to 125°C",
+          "application": "Digital temperature sensing"
+        }
+      },
+      "Humidity Sensors": {
+        "DHT11": {
+          "type": "Humidity",
+          "humidity_range": "20% to 90%",
+          "temperature_range": "-20°C to 50°C",
+          "application": "Humidity and temperature sensing"
+        },
+        "DHT22": {
+          "type": "Humidity",
+          "humidity_range": "0% to 100%",
+          "temperature_range": "-40°C to 80°C",
+          "application": "Humidity and temperature sensing"
+        }
+      },
+      "Motion Sensors": {
+        "PIR Sensor": {
+          "type": "Motion",
+          "range": "3m",
+          "application": "Motion detection"
+        }
+      },
+      "Distance Sensors": {
+        "Ultrasonic": {
+          "type": "Distance",
+          "application": "Distance measuring"
+        }
+      }
+    }
+  }
+}
