@@ -1,0 +1,12 @@
+services:
+
+  cheshire-cat-core:
+    image: ghcr.io/cheshire-cat-ai/core:latest
+    container_name: cheshire_cat_core
+    ports:
+      - 1865:80
+      - 5678:5678
+    volumes:
+      - ./cat/static:/app/cat/static
+      - ./cat/plugins:/app/cat/plugins
+      - ./cat/data:/app/cat/data
