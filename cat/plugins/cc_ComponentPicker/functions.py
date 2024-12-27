@@ -39,7 +39,32 @@ def look_into_categories(path: list, query_component, cat):
         return []
 
     if categories[1]:
-        return [str(categories[0])]
+
+        possible_components = len(list(categories[0].keys()))
+
+        cat.send_ws_message(content=f'Checking {possible_components} component{"" if possible_components < 2 else "s"}...',
+                            msg_type='chat')
+
+        result_components = []
+
+        for component_value, details in categories[0].items():
+            check_query = f"""You have to check if an electric component (#COMPONENT_DATA#) meets some specific requirements (#COMPONENT_REQUIREMENTS#).
+Check every data about the component by comparing them, and if the component does not meet the REQUIREMENTS.
+You MUST respond ONLY WITH "0" OR "1". "1" if the component satisfies the requirements, "0" if not.
+
+#COMPONENT_DATA#
+{component_value}:{str(details)}
+
+#COMPONENT_REQUIREMENTS#
+{query_component}"""
+
+            check_result = cat.llm(check_query)
+
+            if check_result == "1":
+                result_components.append(
+                    f"\n{component_value}:{str(details)}\n")
+
+        return result_components
 
     cat_query = f"""You are an electronics component picker, and you need to classify some component requests in the correct category.
 From the component characteristics and type, and given the categories, choose the categories that include the component itself.
@@ -80,6 +105,6 @@ def pick_component(query_component, cat):
     components = look_into_categories([], query_component, cat)
 
     if "#" in components:
-        return components[1], False
+        return components[1], False, False
     else:
-        return "\n-".join(components), True
+        return "\n-".join(components), True, len(components) != 0

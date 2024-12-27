@@ -57,15 +57,20 @@ Tool Input:
     components = json.loads(input)
 
     results = ""
-    
-    
+
+    cat.send_ws_message(content=f'Let me find the component...',
+                        msg_type='chat')
 
     for component in components:
-        picked_component, found = pick_component(component, cat)
+        picked_component, detail, found = pick_component(component, cat)
 
-        if found:
-            results += f"""\n\n\nFound components: {
-                picked_component}\n\n for request: {str(component)}"""
+        if detail:
+            if found:
+                results += f"""\n\n\nFound components: {
+                    picked_component}\n\n for request: {str(component)}"""
+            else:
+                results += f"""\n\n\nNOT Found component for request: {
+                    str(component)}"""
         else:
             results += f"""\n\n\nNOT fount: {str(component)}\n\n Because the detail {
                 picked_component} is missing."""

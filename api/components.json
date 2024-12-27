@@ -97,6 +97,12 @@
                 "voltage_rating": "45V",
                 "current_rating": "100mA",
                 "application": "Amplification"
+              },
+              "TIP31C": {
+                "type": "NPN",
+                "voltage_rating": "100V",
+                "current_rating": "3A",
+                "application": "Switching applications"
               }
             },
             "PNP": {
