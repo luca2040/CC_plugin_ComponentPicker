@@ -48,15 +48,26 @@ def look_into_categories(path: list, query_component, cat):
         result_components = []
 
         for component_value, details in categories[0].items():
-            check_query = f"""You have to check if an electric component (#COMPONENT_DATA#) meets some specific requirements (#COMPONENT_REQUIREMENTS#).
-Check every data about the component by comparing them, and if the component does not meet the REQUIREMENTS.
-You MUST respond ONLY WITH "0" OR "1". "1" if the component satisfies the requirements, "0" if not.
+            check_query = f"""
+You must evaluate whether an electric component (#COMPONENT_DATA#) satisfies specific requirements (#COMPONENT_REQUIREMENTS#).
+
+- Compare the component's data against the requirements in all specified fields.
+- In the requirements are indicated the MAXIMUM USAGE conditions, so anything better or higher in the COMPONENT_DATA is good.
+- For each field:
+  - Ensure the component's value meets or exceeds the requirement (if applicable).
+  - Respond "0" if any condition is not satisfied.
+- If all conditions are satisfied, respond "1".
+
+Respond ONLY with "0" or "1":
+- "1" if the component satisfies ALL requirements.
+- "0" if the component fails to meet ANY requirement.
 
 #COMPONENT_DATA#
-{component_value}:{str(details)}
+{component_value}: {str(details)}
 
 #COMPONENT_REQUIREMENTS#
-{query_component}"""
+{query_component}
+"""
 
             check_result = cat.llm(check_query)
 

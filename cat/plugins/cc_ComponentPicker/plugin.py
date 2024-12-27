@@ -32,7 +32,6 @@ User Question:
 "Find a 5mA diode fast enough to run at 50kHz, and an N-mosfet capable of 5A at that frequency, controlled by the diode output."  
 
 Tool Input:  
-```json  
 [  
   {  
     "code": "D1",  
@@ -47,7 +46,7 @@ Tool Input:
     "type": "mosfet",  
     "parameters": {  
       "polarity": "N",  
-      "minimum_current": "5A",  
+      "maximum_current": "5A",  
       "frequency": "50kHz"  
     }
   }  
