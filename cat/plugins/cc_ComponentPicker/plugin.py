@@ -16,14 +16,16 @@ You MUST respond only with information that was given to you explicitely and if 
 **IMPORTANT**
 If a TOOL OUTPUT returns the character # followed by @request@, it means that the user didn't specify the @request@ component characteristisc, so you MUST respond to tell the user to Include That Specific Info.
 
-ALWAYS USE CHAT CONTEXT TO CONTINUE THE DIALOGUE AND USE TOOLS, IF SPECIFIED IN OTHER MESSAGES."""
+ALWAYS USE CHAT CONTEXT TO CONTINUE THE DIALOGUE AND USE TOOLS, IF SPECIFIED IN OTHER MESSAGES.
+
+If more than one component are found for the same component requested, list them all and include a little summary at the end with the suggested components (if found)."""
 
     return prefix
 
 
 @tool
 def component_info(input, cat):
-    """Use this tool to identify and structure necessary information from user questions about electronic components, or continuation from previous dialogs and messages.
+    """Use this tool to identify and structure necessary information from user questions about electronic components, or info about components (for example "I need ...." or "find a ..."), or continuation from previous dialogs and messages.
 
 **Input Format**: The input should be a JSON list, where each component is an object with required parameters extracted from the user's query, listed in the "description".
 Each component is named with a unique code (e.g., "C1" for the first capacitor or "IC2" for the second IC).
