@@ -23,36 +23,47 @@ ALWAYS USE CHAT CONTEXT TO CONTINUE THE DIALOGUE AND USE TOOLS, IF SPECIFIED IN 
 
 @tool
 def component_info(input, cat):
-    """Use this tool to identify and structure necessary information from user questions about electronic components, or continuation from previous dialogs and messages.  
+    """Use this tool to identify and structure necessary information from user questions about electronic components, or continuation from previous dialogs and messages.
 
-**Input Format**: The input should be a JSON list, where each component is an object with required parameters extracted from the user's query. Each component is named with a unique code (e.g., "C1" for the first capacitor or "IC2" for the second IC), and has a little description.  
+**Input Format**: The input should be a JSON list, where each component is an object with required parameters extracted from the user's query, listed in the "description".
+Each component is named with a unique code (e.g., "C1" for the first capacitor or "IC2" for the second IC).
+IMPORTANT: Don't put any references between component descriptions (example: "resistor for the diode"), but repeat the data (example: "300Ohm resistor")
 
-**Example**:  
-User Question:  
+**Example**:
+User Question:
 "Find a 5mA diode fast enough to run at 50kHz, and an N-mosfet capable of 5A at that frequency, controlled by the diode output."  
 
-Tool Input:  
-[  
-  {  
-    "code": "D1",  
-    "type": "diode",  
-    "parameters": {  
-      "minimum_current": "5mA",  
-      "frequency": "50kHz"  
-    },
+Tool Input:
+[
+  {
+    "code": "D1",
+    "type": "diode",
     "description": "Fast diode, can sustain at least 5mA, can run at 50kHz"
-  },  
-  {  
-    "code": "M1",  
-    "type": "mosfet",  
-    "parameters": {  
-      "polarity": "N",  
-      "maximum_current": "5A",  
-      "frequency": "50kHz"  
-    },
+  },
+  {
+    "code": "M1",
+    "type": "mosfet",
     "description": "N-mosfet, can sustain at least 5A, can run at 50kHz"
-  }  
-]  
+  }
+]
+
+**Example**:
+User Question:
+"I need a 100mA PNP Darlington transistor that can run at 40V, and a diode that will be connected to its output."  
+
+Tool Input:
+[
+  {
+    "code": "T1",
+    "type": "transistor",
+    "description": "PNP Darlington transistor, can sustain at least 100mA, can run at 40V"
+  },
+  {
+    "code": "D1",
+    "type": "diode",
+    "description": "Diode, can sustain at least 100mA, can sustain 40V"
+  }
+]
 """
 
     components = json.loads(input)
