@@ -14,7 +14,7 @@ You help who asks to find a component that satisfies the request.
 You MUST respond only with information that was given to you explicitely and if you don't have that information say that you "don't have informations".
 
 **IMPORTANT**
-If a TOOL OUTPUT returns the character # followed by @request@, it means that the user didn't specify the @request@ component characteristisc, so you MUST respond to tell the user to INCLUDE THAT SPECIFIC INFO.
+If a TOOL OUTPUT returns the character # followed by @request@, it means that the user didn't specify the @request@ component characteristisc, so you MUST respond to tell the user to Include That Specific Info.
 
 ALWAYS USE CHAT CONTEXT TO CONTINUE THE DIALOGUE AND USE TOOLS, IF SPECIFIED IN OTHER MESSAGES."""
 
@@ -25,7 +25,7 @@ ALWAYS USE CHAT CONTEXT TO CONTINUE THE DIALOGUE AND USE TOOLS, IF SPECIFIED IN 
 def component_info(input, cat):
     """Use this tool to identify and structure necessary information from user questions about electronic components, or continuation from previous dialogs and messages.  
 
-**Input Format**: The input should be a JSON list, where each component is an object with required parameters extracted from the user's query. Each component is named with a unique code (e.g., "C1" for the first capacitor or "IC2" for the second IC).  
+**Input Format**: The input should be a JSON list, where each component is an object with required parameters extracted from the user's query. Each component is named with a unique code (e.g., "C1" for the first capacitor or "IC2" for the second IC), and has a little description.  
 
 **Example**:  
 User Question:  
@@ -39,7 +39,8 @@ Tool Input:
     "parameters": {  
       "minimum_current": "5mA",  
       "frequency": "50kHz"  
-    }  
+    },
+    "description": "Fast diode, can sustain at least 5mA, can run at 50kHz"
   },  
   {  
     "code": "M1",  
@@ -48,7 +49,8 @@ Tool Input:
       "polarity": "N",  
       "maximum_current": "5A",  
       "frequency": "50kHz"  
-    }
+    },
+    "description": "N-mosfet, can sustain at least 5A, can run at 50kHz"
   }  
 ]  
 """

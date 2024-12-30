@@ -48,19 +48,14 @@ def look_into_categories(path: list, query_component, cat):
         result_components = []
 
         for component_value, details in categories[0].items():
-            check_query = f"""
-You must evaluate whether an electric component (#COMPONENT_DATA#) satisfies specific requirements (#COMPONENT_REQUIREMENTS#).
+            check_query = f"""You must evaluate whether an electric component (#COMPONENT_DATA#) satisfies specific requirements (#COMPONENT_REQUIREMENTS#).
 
-- Compare the component's data against the requirements in all specified fields.
-- In the requirements are indicated the MAXIMUM USAGE conditions, so anything better or higher in the COMPONENT_DATA is good.
-- For each field:
-  - Ensure the component's value meets or exceeds the requirement (if applicable).
-  - Respond "0" if any condition is not satisfied.
-- If all conditions are satisfied, respond "1".
+- Compare the component's data against the requirements in all specified fields, using the "description" field in the requirements.
+- More explanation on the component is in the "description" value in the requirements.
 
 Respond ONLY with "0" or "1":
 - "1" if the component satisfies ALL requirements.
-- "0" if the component fails to meet ANY requirement.
+- "0" if the component fails to meet ANY (Even only ONE) requirement.
 
 #COMPONENT_DATA#
 {component_value}: {str(details)}
