@@ -48,29 +48,18 @@ def look_into_categories(path: list, query_component, cat):
         result_components = []
 
         for component_value, details in categories[0].items():
-            check_query = f"""You must evaluate whether an electric component (#COMPONENT_DATA#) satisfies specific requirements (#COMPONENT_REQUIREMENTS#).
+            check_query = f"""##TASK
+You must determine if an electronic component (#COMPONENT_DATA#) meets specific requirements (#COMPONENT_REQUIREMENTS#).
 
-In the "description" on the requirements is indicated how the component will be used, anything better than that is OK.
-
-Respond ONLY with "0" or "1":
-- "1" if the component satisfies ALL requirements.
-- "0" if the component fails to meet ANY (Even only ONE) requirement.
-
-**EXAMPLE**
-#COMPONENT_DATA#
-D4895: {{'type': 'Rectifier diode', 'voltage_rating': '100V', 'current_rating': '9A', 'application': 'Rectification'}}
-
-#COMPONENT_REQUIREMENTS#
-{{'code': 'D1', 'type': 'diode', 'description': 'Rectifier diode, can sustain at least 2.8A, can sustain 20V'}}
-
-OUTPUT: 1
-****
-
+##DATA
 #COMPONENT_DATA#
 {component_value}: {str(details)}
 
 #COMPONENT_REQUIREMENTS#
 {query_component}
+
+##FINAL OUTPUT:
+Respond only with "0" or "1".
 """
 
             check_result = cat.llm(check_query)
