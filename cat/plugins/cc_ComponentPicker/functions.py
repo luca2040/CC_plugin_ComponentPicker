@@ -49,14 +49,14 @@ def look_into_categories(path: list, query_component, cat):
 
         for component_value, details in categories[0].items():
             check_query = f"""##TASK
-You must determine if an electronic component (#COMPONENT_DATA#) meets specific requirements (#COMPONENT_REQUIREMENTS#).
+You must determine if an electronic component (#COMPONENT_DATA#) meets specific requirements (#REQUIREMENTS#).
 
 ##DATA
+#REQUIREMENTS#
+{query_component}
+
 #COMPONENT_DATA#
 {component_value}: {str(details)}
-
-#COMPONENT_REQUIREMENTS#
-{query_component}
 
 ##FINAL OUTPUT:
 Respond only with "0" or "1".

@@ -11,3 +11,9 @@ _The database was made just for example and does not include all the information
 ---
 
 Everything for running this and the API is included in the `compose.yml` file.
+
+---
+
+**Example:**
+
+<img width="888" alt="CheshireCatCOmponentPickerPluginExample01" src="https://github.com/user-attachments/assets/3b2b924e-8bbb-4fe8-ab34-39d47711a673" />
