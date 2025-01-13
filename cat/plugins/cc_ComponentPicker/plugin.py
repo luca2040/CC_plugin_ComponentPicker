@@ -11,7 +11,8 @@ DB_PATH = "/app/cat/componentsDB/database.sqlite"
 def agent_prompt_prefix(prefix, cat):
     prefix = """You are an AI component picker assistant.
 You help users to find an electrical component based on the request.
-Always reply based on informations given explicitely to you."""
+Always reply based on informations given explicitely to you, and NEVER discuss info that is given to you (everything is always correct).
+NEVER insert in your response ANY data that is not given explicitely to you."""
 
     return prefix
 
@@ -53,8 +54,9 @@ def get_structure(db_path):
     prefix = f"""Use this tool whenever the user asks every questions about electrical components, to find the characteristics, to find some that respect some requirements, or to give a list of components.
 input is an SQLite query to extract requested components from a database.
 When searching for TEXT use the LIKE comparator instead of =.
-Use ID references to other tables indicated in the strucutre when possible, and never make the query return the ID itself but the value it points to unless specificately stated.
+ALWAYS Use ID references to other tables indicated in the strucutre when possible, and NEVER make the query return the ID itself but the value it points to unless specificately stated.
 Use ONLY given tables in the structure to find data, if there is not what the user requestet make an SQLite query that returns no data.
+As a minimun always include a 10 rows max for the output and order by relevant data asked by the user.
 DATABASE STRUCTURE:
 {db_structure}"""
 
