@@ -10,4 +10,4 @@ services:
       - ./cat/static:/app/cat/static
       - ./cat/plugins:/app/cat/plugins
       - ./cat/data:/app/cat/data
-      - ./db:/app/cat/db
+      - ./db:/app/cat/componentsDB
