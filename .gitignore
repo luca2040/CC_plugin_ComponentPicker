@@ -163,4 +163,5 @@ cython_debug/
 
 cat/data/
 static/
-database.sqlite
+ollama/
+ollamaui/
