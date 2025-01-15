@@ -24,32 +24,36 @@ def before_cat_recalls_procedural_memories(procedural_recall_config, cat):
     return procedural_recall_config
 
 
+def get_DB_tables_ddl(db_path):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+
+    tab_names = cursor.fetchall()
+    DDLs = {}
+
+    for db_table_name in tab_names:
+        table_name = db_table_name[0]
+
+        cursor.execute(
+            f"SELECT sql FROM sqlite_master WHERE type='table' AND name=?;", (table_name,))
+
+        ddl = cursor.fetchone()[0]
+        DDLs[table_name] = ddl
+
+    conn.close()
+
+    return DDLs
+
+
 def get_structure(db_path):
     # Load DB structure and dynamically generate tool prefix.
 
-    # db_structure is a JSON-like string the cat can understand.
-    # While testing just simple static prefix
-    db_structure = """Tables:[
-"Mosfets": {	Code TEXT NOT NULL,
-	Polarity TEXT NOT NULL [measure_unit: "N" or "P"],
-	Power REAL NOT NULL [measure_unit: W],
-	Drain_s_V REAL NOT NULL [measure_unit: V],
-	Gate_s_V REAL NOT NULL [measure_unit: V],
-	Drain_s_I REAL NOT NULL [measure_unit: A],
-	T_junc REAL NOT NULL [measure_unit: °C],
-	Rise_t REAL NOT NULL [measure_unit: ns],
-	Output_cap REAL NOT NULL [measure_unit: pF],
-	Rds_ON REAL NOT NULL [measure_unit: Ohm],
-	Package_ID INTEGER NOT NULL [ID reference to table "Packages"]}
-"Packages": {	ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	Name TEXT NOT NULL}
-"Resistors": {	Value REAL NOT NULL [measure_unit: Ohm],
-	Tolerance REAL NOT NULL [measure_unit: %],
-	Power REAL NOT NULL [measure_unit: W],
-	Type_ID INTEGER NOT NULL [ID reference to table "Resistor_types"]}
-"Resistor_types": {	ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-	"Type" TEXT NOT NULL}
-]"""
+    table_DDLs = get_DB_tables_ddl(db_path)
+    table_DDLs.pop("sqlite_sequence")
+
+    db_structure = "\n".join(ddl for _, ddl in table_DDLs.items())
 
     prefix = f"""Use this tool whenever the user asks every questions about electrical components, to find the characteristics, to find some that respect some requirements, or to give a list of components.
 input is an SQLite query to extract requested components from a database.
