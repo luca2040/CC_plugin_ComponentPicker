@@ -1,0 +1,24 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+      {
+          "name": "Python: Remote Attach to Cat",
+          "type": "python",
+          "request": "attach",
+          "connect": {
+              "host": "localhost",
+              "port": 5678
+          },
+          "pathMappings": [
+              {
+                  "localRoot": "${workspaceFolder}/cat/plugins",
+                  "remoteRoot": "/app/cat/plugins"
+              }
+          ],
+          "justMyCode": true
+      }
+  ]
+}
