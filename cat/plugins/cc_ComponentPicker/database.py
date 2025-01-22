@@ -78,3 +78,19 @@ def query_db_json(db_path, query):
     conn.close()
 
     return json_response
+
+
+def get_data_list(db_path, table_name):
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+
+    cursor = conn.cursor()
+
+    cursor.execute(f"SELECT * FROM {table_name}")
+    rows = cursor.fetchall()
+
+    data = [dict(row) for row in rows]
+
+    conn.close()
+
+    return data

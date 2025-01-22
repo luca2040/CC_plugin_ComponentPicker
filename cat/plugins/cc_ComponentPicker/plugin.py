@@ -1,11 +1,14 @@
 from cat.mad_hatter.decorators import tool
 from cat.mad_hatter.decorators import hook
 
-from cat.plugins.cc_ComponentPicker.data import get_needed_tables, get_db_query
-from cat.plugins.cc_ComponentPicker.database import query_db_json
+from cat.plugins.cc_ComponentPicker.data import get_needed_tables, get_db_query, get_tables
+from cat.plugins.cc_ComponentPicker.database import query_db_json, get_data_list
 
-DB_PATH = "/app/cat/componentsDB/database.sqlite"
-INDEX_TABLE = "Tables_metadata"
+import os
+from elasticsearch import Elasticsearch
+
+DB_PATH = os.environ["CAT_DB_PATH"]
+INDEX_TABLE = os.environ["CAT_INDEX_TABLE"]
 
 
 @hook
@@ -16,6 +19,43 @@ Always reply based on informations given explicitely to you, and NEVER discuss i
 NEVER insert in your response ANY data that is not given explicitely to you."""
 
     return prefix
+
+
+@hook
+def before_cat_bootstrap(cat):
+    es = Elasticsearch(
+        "http://elasticsearch:9200",
+        api_key=os.environ["ELASTIC_KEY"]
+    )
+
+    _, advanced_tables, _, _ = get_tables(DB_PATH, INDEX_TABLE)
+
+    for table in advanced_tables:
+        es_table = table.lower()
+
+        if not es.indices.exists(index=es_table):
+            es.indices.create(index=es_table)
+
+        data_list = get_data_list(DB_PATH, table)
+
+        docs = []
+        base_settings = {"_extract_binary_content": True,
+                         "_reduce_whitespace": True, "_run_ml_inference": True}
+
+        for row in data_list:
+            index_data = {"index": {"_index": es_table, "_id": str(row["ID"])}}
+            content_data = base_settings.copy()
+
+            row.pop("ID")
+
+            for key, value in row.items():
+                content_data[key] = value
+
+            docs += [index_data, content_data]
+
+        es.bulk(operations=docs, pipeline="ent-search-generic-ingestion")
+
+    es.close()
 
 
 @hook
@@ -40,7 +80,26 @@ input is what the user requested, formatted in a complete and short way.
     advanced_search = any(name in advanced_tables for name in tables)
 
     if advanced_search:
-        return "adv"
+        es = Elasticsearch(
+            "http://elasticsearch:9200",
+            api_key=os.environ["ELASTIC_KEY"]
+        )
+
+        search_body = {
+            "query": {
+                "query_string": {
+                    "query": input,
+                    "fields": ["code", "description"]
+                }
+            }
+        }
+
+        response = es.search(index="ics", body=search_body)
+
+        test = [hit["_source"] for hit in response["hits"]["hits"]]
+
+        es.close()
+        return str(test)
 
     db_query, units = get_db_query(cat, input, structure, DB_PATH,
                                    INDEX_TABLE, tables, unit_tables, use_units)

@@ -8,7 +8,7 @@ def get_needed_tables(cat, query, db_path, index_table):
 
     cat_query = f"""Resoind with a JSON list containing the names of SQLite tables needed to extract requested electrical components from a database.
 Tables only contain the specific components categorized by the title and not generic components related to that.
-Use ONLY given tables in the structure to find data, if there doesn't exist any table where the request can be found return an empty JSON list.
+Use ONLY given tables in the structure to find data.
 REQUEST:
 {query}
 DATABASE STRUCTURE:

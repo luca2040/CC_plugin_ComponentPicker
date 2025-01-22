@@ -167,3 +167,7 @@ ollama/
 ollamaui/
 cc_vscode_debugpy/
 .vscode
+
+elastic/
+kibana/
+test/
