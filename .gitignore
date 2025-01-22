@@ -166,3 +166,4 @@ static/
 ollama/
 ollamaui/
 cc_vscode_debugpy/
+.vscode
