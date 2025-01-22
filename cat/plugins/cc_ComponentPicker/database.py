@@ -1,4 +1,5 @@
 import sqlite3
+import json
 
 
 def get_table_types(db_path, index_table):
@@ -57,3 +58,23 @@ def get_units_per_table(db_path, columns_metadata_table_name, units_map_table_na
 
     conn.close()
     return meas_units
+
+
+def query_db_json(db_path, query):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    cursor.execute(query)
+
+    columns = [description[0] for description in cursor.description]
+    rows = cursor.fetchall()
+
+    result = []
+    for row in rows:
+        result.append(dict(zip(columns, row)))
+
+    json_response = json.dumps(result)
+
+    conn.close()
+
+    return json_response
