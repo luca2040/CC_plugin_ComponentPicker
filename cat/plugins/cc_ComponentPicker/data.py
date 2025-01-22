@@ -1,4 +1,8 @@
-from cat.plugins.cc_ComponentPicker.database import get_table_types, get_units_per_table, get_DB_tables_ddl
+from cat.plugins.cc_ComponentPicker.database import (
+    get_table_types,
+    get_units_per_table,
+    get_DB_tables_ddl,
+)
 
 import json
 
@@ -6,8 +10,8 @@ import json
 def get_needed_tables(cat, query, db_path, index_table):
     db_structure, table_names = get_structure(db_path, index_table)
 
-    cat_query = f"""Resoind with a JSON list containing the names of SQLite tables needed to extract requested electrical components from a database.
-Tables only contain the specific components categorized by the title and not generic components related to that.
+    cat_query = f"""Respond with a JSON list containing the names of SQLite tables needed to extract requested electrical components from a database.
+Tables only contain the specific components categorized by the title and not generic components related to that, except for general categories like microcontrollers or integrated circuits.
 Use ONLY given tables in the structure to find data.
 REQUEST:
 {query}
@@ -15,19 +19,19 @@ DATABASE STRUCTURE:
 {db_structure}"""
 
     cat_response = cat.llm(cat_query)
-    cat_response = cat_response.replace(
-        "`", "").replace("json", "").replace("\n", "")
+    cat_response = cat_response.replace("`", "").replace("json", "").replace("\n", "")
 
     return json.loads(cat_response), table_names, db_structure
 
 
-def get_db_query(cat, query, db_structure, db_path, index_table, tables, unit_tables, use_units):
+def get_db_query(
+    cat, query, db_structure, db_path, index_table, tables, unit_tables, use_units
+):
 
     units = ""
     if use_units:
         units = "MEASUREMENT UNITS:\n"
-        units += get_units_for_tables(db_path,
-                                      tables, index_table, unit_tables)
+        units += get_units_for_tables(db_path, tables, index_table, unit_tables)
 
     cat_query = f"""Respond with an SQLite query to extract requested components from a database.
 When searching for TEXT use the LIKE comparator instead of =
@@ -87,7 +91,8 @@ def get_tables(db_path, index_table):
 
 def get_structure(db_path, index_table):
     data_tables, advanced_tables, unit_tables, use_units = get_tables(
-        db_path, index_table)
+        db_path, index_table
+    )
 
     total_tables = data_tables + advanced_tables
     table_DDLs = get_DB_tables_ddl(db_path, total_tables)
@@ -98,7 +103,8 @@ def get_structure(db_path, index_table):
 
 def get_units_for_tables(db_path, table_names, index_table, unit_tables):
     units_list = get_units_per_table(
-        db_path, unit_tables[0], unit_tables[1], unit_tables[2], index_table)
+        db_path, unit_tables[0], unit_tables[1], unit_tables[2], index_table
+    )
 
     units = ""
     for table, t_units in units_list.items():
