@@ -37,7 +37,7 @@ def get_db_query(
 When searching for TEXT use the LIKE comparator instead of =
 ALWAYS Use ID references to other tables indicated in the foreign keys when possible, and NEVER make the query return the ID itself but the value it points to unless specificately stated.
 Use ONLY given tables in the structure to find data, if there is not what the user requestet make an SQLite query that returns no data.
-Always include a 15 rows limit for the output and order by relevant data asked by the user.
+Always include a 15 rows limit for the output and order by relevant data asked by the user, ONLY if not asked to find a maximum or minimum value, if so then use the respective functions to get only that value.
 REQUEST:
 {query}
 DATABASE STRUCTURE:

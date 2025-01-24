@@ -81,7 +81,7 @@ input is what the user requested, formatted in a complete and short way.
         cat, input, DB_PATH, INDEX_TABLE
     )
     if not tables:
-        return "Component not found"
+        return "Requested component's table does not exist in the database."
 
     advanced_search = any(name in advanced_tables for name in tables)
 
@@ -92,7 +92,7 @@ input is what the user requested, formatted in a complete and short way.
 
         search_body = {
             "query": {
-                "query_string": {"query": input, "fields": ["code", "description"]}
+                "query_string": {"query": input}
             }
         }
 
@@ -110,6 +110,8 @@ input is what the user requested, formatted in a complete and short way.
     cat.send_ws_message(content=f"```SQL\n{db_query}\n```", msg_type="chat")
 
     db_result = query_db_json(DB_PATH, db_query)
+    if not db_result:
+        db_result = "Found no components meeting the requirements."
 
     return_info = f"""DB QUERY:
 ```{db_query}```

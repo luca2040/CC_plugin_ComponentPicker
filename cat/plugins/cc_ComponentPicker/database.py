@@ -20,7 +20,7 @@ def get_DB_tables_ddl(db_path, data_tables):
 
     cursor.execute(
         f"""SELECT name FROM sqlite_master WHERE type='table' AND name IN ({
-                   ", ".join("?" for _ in data_tables)});""",
+            ", ".join("?" for _ in data_tables)});""",
         data_tables,
     )
 
@@ -90,7 +90,7 @@ def query_db_json(db_path, query):
 
     conn.close()
 
-    return json_response
+    return json_response if result else None
 
 
 def get_data_list(db_path, table_name):
