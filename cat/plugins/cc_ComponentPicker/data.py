@@ -11,7 +11,7 @@ def get_needed_tables(cat, query, db_path, index_table):
     db_structure, table_names = get_structure(db_path, index_table)
 
     cat_query = f"""Respond with a JSON list containing the names of SQLite tables needed to extract requested electrical components from a database.
-Tables only contain the specific components categorized by the title and not generic components related to that, except for general categories like microcontrollers or integrated circuits.
+Tables only contain components categorized by the title, except for general categories like microcontrollers or integrated circuits.
 Use ONLY given tables in the structure to find data.
 REQUEST:
 {query}
@@ -19,7 +19,8 @@ DATABASE STRUCTURE:
 {db_structure}"""
 
     cat_response = cat.llm(cat_query)
-    cat_response = cat_response.replace("`", "").replace("json", "").replace("\n", "")
+    cat_response = cat_response.replace(
+        "`", "").replace("json", "").replace("\n", "")
 
     return json.loads(cat_response), table_names, db_structure
 
@@ -31,7 +32,8 @@ def get_db_query(
     units = ""
     if use_units:
         units = "MEASUREMENT UNITS:\n"
-        units += get_units_for_tables(db_path, tables, index_table, unit_tables)
+        units += get_units_for_tables(db_path,
+                                      tables, index_table, unit_tables)
 
     cat_query = f"""Respond with an SQLite query to extract requested components from a database.
 When searching for TEXT use the LIKE comparator instead of =
@@ -112,3 +114,17 @@ def get_units_for_tables(db_path, table_names, index_table, unit_tables):
             units += f"Table: {table}\n{t_units}\n"
 
     return units
+
+
+def get_elastic_query(cat, input):
+
+    cat_query = f"""Given a query, generate another query that represents the input.
+Your response should contain the request in the input, but formatted in a way optimized for a search engine looking into a components database,
+using keywords and removing useless words.
+Yout response also should be the most concise possible and point to the correct result.
+QUERY:
+{input}"""
+
+    output = cat.llm(cat_query)
+
+    return output

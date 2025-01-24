@@ -46,6 +46,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    command: ["elasticsearch", "-Elogger.level=WARN"]
 
   kibana_settings:
     depends_on:

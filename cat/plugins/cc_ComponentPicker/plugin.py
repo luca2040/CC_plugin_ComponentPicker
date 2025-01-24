@@ -5,6 +5,7 @@ from cat.plugins.cc_ComponentPicker.data import (
     get_needed_tables,
     get_db_query,
     get_tables,
+    get_elastic_query
 )
 from cat.plugins.cc_ComponentPicker.database import query_db_json, get_data_list
 
@@ -80,28 +81,49 @@ input is what the user requested, formatted in a complete and short way.
     tables, (_, advanced_tables, unit_tables, use_units), structure = get_needed_tables(
         cat, input, DB_PATH, INDEX_TABLE
     )
+    cat.send_ws_message(content=f"Selected tables:\n{tables}", msg_type="chat")
     if not tables:
         return "Requested component's table does not exist in the database."
 
     advanced_search = any(name in advanced_tables for name in tables)
 
     if advanced_search:
+        es_query = get_elastic_query(cat, input)
+        # The commented "nopep8" is just because the formatter kept breaking this line
+        cat.send_ws_message(content=f"Elastic query:\n{es_query}", msg_type="chat")  # nopep8
+
         es = Elasticsearch(
             "http://elasticsearch:9200", api_key=os.environ["ELASTIC_KEY"]
         )
 
         search_body = {
             "query": {
-                "query_string": {"query": input}
+                "query_string": {"query": es_query}
             }
         }
 
         response = es.search(index="ics", body=search_body)
-
-        test = [hit["_source"] for hit in response["hits"]["hits"]]
-
         es.close()
-        return str(test)
+
+        result_found = response["hits"]["total"]["value"] > 0
+        hits = response["hits"]["hits"]
+
+        results = []
+        for hit in hits:
+            score = hit["_score"]
+            source = hit["_source"]
+            data = str(list(source.items()))
+
+            results.append((score, data))
+
+        result_num = 3
+        sorted_results = sorted(results, key=lambda x: x[0], reverse=True)
+        best_results = sorted_results[:result_num]
+
+        return_info = f"""SEARCH RETURNED ITEMS:
+{str([res[1] for res in best_results])}"""
+
+        return return_info
 
     db_query, units = get_db_query(
         cat, input, structure, DB_PATH, INDEX_TABLE, tables, unit_tables, use_units
