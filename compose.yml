@@ -4,20 +4,51 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+      ollama:
+        condition: service_healthy
     image: ghcr.io/cheshire-cat-ai/core:latest
     container_name: cheshire_cat_core
     ports:
       - 1865:80
       - 5678:5678
     environment:
+      - CCAT_LOG_LEVEL=${CCAT_LOG_LEVEL}
       - ELASTIC_KEY=${ES_CAT_KEY}
       - CAT_DB_PATH=${CAT_DB_PATH}
       - CAT_INDEX_TABLE=${CAT_INDEX_TABLE}
+      - ELASTIC_URL=${ELASTIC_URL}
+      - OLLAMA_MODEL=${CAT_OLLAMA_MODEL}
+      - OLLAMA_API=${OLLAMA_API}
+      - OLLAMA_KEEP_ALIVE=${OLLAMA_KEEP_ALIVE}
     volumes:
       - ./cat/static:/app/cat/static
       - ./cat/plugins:/app/cat/plugins
       - ./cat/data:/app/cat/data
       - ./db:/app/cat/componentsDB
+
+  ollama:
+    container_name: ollama
+    image: ollama/ollama:latest
+    volumes:
+      - ollama:/root/.ollama
+    environment:
+      - gpus=all
+      - OLLAMA_KEEP_ALIVE=${OLLAMA_KEEP_ALIVE}
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+    healthcheck:
+      test: "ollama --version && ollama ps || exit 1"
+      interval: 5s
+      retries: 20
+      timeout: 10s
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ES_LOCAL_VERSION}
@@ -46,7 +77,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-    command: ["elasticsearch", "-Elogger.level=WARN"]
+    command: [ "elasticsearch", "-Elogger.level=WARN" ]
 
   kibana_settings:
     depends_on:
@@ -85,3 +116,6 @@ services:
       interval: 10s
       timeout: 10s
       retries: 20
+
+volumes:
+  ollama:

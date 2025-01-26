@@ -7,10 +7,10 @@ from cat.plugins.cc_ComponentPicker.database import (
 import json
 
 
-def get_needed_tables(cat, query, db_path, index_table):
+def get_needed_tables(llm, query, db_path, index_table):
     db_structure, table_names = get_structure(db_path, index_table)
 
-    cat_query = f"""Respond with a JSON list containing the names of SQLite tables needed to extract requested electrical components from a database.
+    llm_query = f"""Respond with a JSON list containing the names of SQLite tables needed to extract requested electrical components from a database.
 Tables only contain components categorized by the title, except for general categories like microcontrollers or integrated circuits.
 Use ONLY given tables in the structure to find data.
 REQUEST:
@@ -18,24 +18,27 @@ REQUEST:
 DATABASE STRUCTURE:
 {db_structure}"""
 
-    cat_response = cat.llm(cat_query)
-    cat_response = cat_response.replace(
-        "`", "").replace("json", "").replace("\n", "")
+    llm_response = llm.llm(
+        llm_query,
+        format={
+            "type": "array",
+            "items": {"type": "string"},
+        },
+    )
 
-    return json.loads(cat_response), table_names, db_structure
+    return json.loads(llm_response), table_names, db_structure
 
 
 def get_db_query(
-    cat, query, db_structure, db_path, index_table, tables, unit_tables, use_units
+    llm, query, db_structure, db_path, index_table, tables, unit_tables, use_units
 ):
 
     units = ""
     if use_units:
         units = "MEASUREMENT UNITS:\n"
-        units += get_units_for_tables(db_path,
-                                      tables, index_table, unit_tables)
+        units += get_units_for_tables(db_path, tables, index_table, unit_tables)
 
-    cat_query = f"""Respond with an SQLite query to extract requested components from a database.
+    llm_query = f"""Respond with an SQLite query to extract requested components from a database.
 When searching for TEXT use the LIKE comparator instead of =
 ALWAYS Use ID references to other tables indicated in the foreign keys when possible, and NEVER make the query return the ID itself but the value it points to unless specificately stated.
 Use ONLY given tables in the structure to find data, if there is not what the user requestet make an SQLite query that returns no data.
@@ -46,7 +49,18 @@ DATABASE STRUCTURE:
 {db_structure}
 {units}"""
 
-    result = cat.llm(cat_query).replace("`", "").replace("sql", "")
+    llm_response = llm.llm(
+        llm_query,
+        format={
+            "type": "object",
+            "properties": {
+                "SQL_query": {"type": "string"},
+            },
+            "required": ["SQL_query"],
+        },
+    )
+
+    result = json.loads(llm_response)["SQL_query"]
 
     return result, units
 
@@ -116,15 +130,24 @@ def get_units_for_tables(db_path, table_names, index_table, unit_tables):
     return units
 
 
-def get_elastic_query(cat, input):
+def get_elastic_query(llm, input):
 
-    cat_query = f"""Given a query, generate another query that represents the input.
+    llm_query = f"""Given a query, generate another query that represents the input.
 Your response should contain the request in the input, but formatted in a way optimized for a search engine looking into a components database,
 using keywords and removing useless words.
 Yout response also should be the most concise possible and point to the correct result.
 QUERY:
 {input}"""
 
-    output = cat.llm(cat_query)
+    llm_response = llm.llm(
+        llm_query,
+        format={
+            "type": "object",
+            "properties": {
+                "search_query": {"type": "string"},
+            },
+            "required": ["search_query"],
+        },
+    )
 
-    return output
+    return json.loads(llm_response)["search_query"]

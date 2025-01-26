@@ -1,19 +1,25 @@
 from cat.mad_hatter.decorators import tool
 from cat.mad_hatter.decorators import hook
+from cat.log import log
 
 from cat.plugins.cc_ComponentPicker.data import (
     get_needed_tables,
     get_db_query,
     get_tables,
-    get_elastic_query
+    get_elastic_query,
 )
 from cat.plugins.cc_ComponentPicker.database import query_db_json, get_data_list
+from cat.plugins.cc_ComponentPicker.ollama import OllamaLLM
 
 import os
 from elasticsearch import Elasticsearch
 
 DB_PATH = os.environ["CAT_DB_PATH"]
 INDEX_TABLE = os.environ["CAT_INDEX_TABLE"]
+ELASTIC_URL = os.environ["ELASTIC_URL"]
+OLLAMA_MODEL = os.environ["OLLAMA_MODEL"]
+OLLAMA_API = os.environ["OLLAMA_API"]
+OLLAMA_KEEP_ALIVE = os.environ["OLLAMA_KEEP_ALIVE"]
 
 
 @hook
@@ -26,10 +32,16 @@ NEVER insert in your response ANY data that is not given explicitely to you."""
     return prefix
 
 
+OLLAMA_LLM = None
+
+
 @hook
 def before_cat_bootstrap(cat):
-    es = Elasticsearch("http://elasticsearch:9200",
-                       api_key=os.environ["ELASTIC_KEY"])
+    global OLLAMA_LLM
+    OLLAMA_LLM = OllamaLLM(OLLAMA_API, OLLAMA_MODEL, log, OLLAMA_KEEP_ALIVE)
+    OLLAMA_LLM.load_model()
+
+    es = Elasticsearch(ELASTIC_URL, api_key=os.environ["ELASTIC_KEY"])
 
     _, advanced_tables, _, _ = get_tables(DB_PATH, INDEX_TABLE)
 
@@ -73,13 +85,12 @@ def before_cat_recalls_procedural_memories(procedural_recall_config, cat):
 
 @tool()
 def component_info(input, cat):
-    """Use this tool always when the user asks a question about electrical components (Active, passive, integrated circuits, ...), to find the characteristics,
+    """Use this tool always when the user asks a question about electrical components (Active, passive, integrated circuits, ...), to find the characteristics, \
 to find some that meet some requirements, or to give a list of components.
-input is what the user requested, formatted in a complete and short way.
-"""
+input is what the user requested, formatted in a complete and short way."""
 
     tables, (_, advanced_tables, unit_tables, use_units), structure = get_needed_tables(
-        cat, input, DB_PATH, INDEX_TABLE
+        OLLAMA_LLM, input, DB_PATH, INDEX_TABLE
     )
     cat.send_ws_message(content=f"Selected tables:\n{tables}", msg_type="chat")
     if not tables:
@@ -88,24 +99,17 @@ input is what the user requested, formatted in a complete and short way.
     advanced_search = any(name in advanced_tables for name in tables)
 
     if advanced_search:
-        es_query = get_elastic_query(cat, input)
-        # The commented "nopep8" is just because the formatter kept breaking this line
-        cat.send_ws_message(content=f"Elastic query:\n{es_query}", msg_type="chat")  # nopep8
+        es_query = get_elastic_query(OLLAMA_LLM, input)
+        cat.send_ws_message(content=f"Elastic query:\n{es_query}", msg_type="chat")
 
-        es = Elasticsearch(
-            "http://elasticsearch:9200", api_key=os.environ["ELASTIC_KEY"]
-        )
+        es = Elasticsearch(ELASTIC_URL, api_key=os.environ["ELASTIC_KEY"])
 
-        search_body = {
-            "query": {
-                "query_string": {"query": es_query}
-            }
-        }
-
-        response = es.search(index="ics", body=search_body)
+        response = es.search(index="ics", q=es_query)
         es.close()
 
         result_found = response["hits"]["total"]["value"] > 0
+        if not result_found:
+            return "Found no components meeting the requirements."
         hits = response["hits"]["hits"]
 
         results = []
@@ -126,7 +130,14 @@ input is what the user requested, formatted in a complete and short way.
         return return_info
 
     db_query, units = get_db_query(
-        cat, input, structure, DB_PATH, INDEX_TABLE, tables, unit_tables, use_units
+        OLLAMA_LLM,
+        input,
+        structure,
+        DB_PATH,
+        INDEX_TABLE,
+        tables,
+        unit_tables,
+        use_units,
     )
 
     cat.send_ws_message(content=f"```SQL\n{db_query}\n```", msg_type="chat")

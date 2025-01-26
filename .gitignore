@@ -171,3 +171,4 @@ cc_vscode_debugpy/
 elastic/
 kibana/
 test/
+ollama/
