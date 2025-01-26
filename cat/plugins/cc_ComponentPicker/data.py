@@ -1,3 +1,4 @@
+from typing import List, Tuple
 from cat.plugins.cc_ComponentPicker.database import (
     get_table_types,
     get_units_per_table,
@@ -7,7 +8,11 @@ from cat.plugins.cc_ComponentPicker.database import (
 import json
 
 
-def get_needed_tables(llm, query, db_path, index_table):
+def get_needed_tables(
+    llm, query: str, db_path: str, index_table: str
+) -> Tuple[List[str], str, str]:
+    """Returns the list of tables that need to be used to extract the data specified by the query from the DB."""
+
     db_structure, table_names = get_structure(db_path, index_table)
 
     llm_query = f"""Respond with a JSON list containing the names of SQLite tables needed to extract requested electrical components from a database.
@@ -30,8 +35,18 @@ DATABASE STRUCTURE:
 
 
 def get_db_query(
-    llm, query, db_structure, db_path, index_table, tables, unit_tables, use_units
-):
+    llm,
+    query: str,
+    db_structure: str,
+    db_path: str,
+    index_table: str,
+    tables: List[str],
+    unit_tables: List[str],
+    use_units: bool,
+) -> Tuple[str, str]:
+    """Returns an SQLite query that extracts from the DB the data specified in the query.
+    The database structure is needed to tell the LLM to generate the query based on that structure.
+    """
 
     units = ""
     if use_units:
@@ -65,7 +80,11 @@ DATABASE STRUCTURE:
     return result, units
 
 
-def get_tables(db_path, index_table):
+def get_tables(
+    db_path: str, index_table: str
+) -> Tuple[List[str], List[str], List[str], bool]:
+    """Returns the list of tables in the DB, divided by the type specified in the index table."""
+
     table_types = get_table_types(db_path, index_table)
 
     data_tables = []
@@ -105,7 +124,11 @@ def get_tables(db_path, index_table):
     return data_tables, advanced_tables, unit_tables, use_units
 
 
-def get_structure(db_path, index_table):
+def get_structure(
+    db_path: str, index_table: str
+) -> Tuple[str, Tuple[List[str], List[str], List[str], bool]]:
+    """Generates a string containing the structure of the database."""
+
     data_tables, advanced_tables, unit_tables, use_units = get_tables(
         db_path, index_table
     )
@@ -117,7 +140,11 @@ def get_structure(db_path, index_table):
     return db_structure, (data_tables, advanced_tables, unit_tables, use_units)
 
 
-def get_units_for_tables(db_path, table_names, index_table, unit_tables):
+def get_units_for_tables(
+    db_path: str, table_names: List[str], index_table: str, unit_tables: List[str]
+) -> str:
+    """Returns the measurement units list for the specified tables."""
+
     units_list = get_units_per_table(
         db_path, unit_tables[0], unit_tables[1], unit_tables[2], index_table
     )
@@ -130,7 +157,8 @@ def get_units_for_tables(db_path, table_names, index_table, unit_tables):
     return units
 
 
-def get_elastic_query(llm, input):
+def get_elastic_query(llm, input: str) -> str:
+    """Returns an elasticsearch-optimized query based on the input query."""
 
     llm_query = f"""Given a query, generate another query that represents the input.
 Your response should contain the request in the input, but formatted in a way optimized for a search engine looking into a components database,

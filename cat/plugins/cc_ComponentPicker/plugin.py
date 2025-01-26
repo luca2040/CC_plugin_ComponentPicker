@@ -32,6 +32,7 @@ NEVER insert in your response ANY data that is not given explicitely to you."""
     return prefix
 
 
+# Global variable to store the Ollama model object
 OLLAMA_LLM = None
 
 

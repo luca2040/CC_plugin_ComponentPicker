@@ -1,8 +1,11 @@
+from typing import List
 import sqlite3
 import json
 
 
-def get_table_types(db_path, index_table):
+def get_table_types(db_path: str, index_table: str) -> List[any]:
+    """Returns the table types from the index table."""
+
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
@@ -14,7 +17,9 @@ def get_table_types(db_path, index_table):
     return table_types
 
 
-def get_DB_tables_ddl(db_path, data_tables):
+def get_DB_tables_ddl(db_path: str, data_tables: List[str]) -> dict:
+    """Get the DLL of the specified tables."""
+
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
@@ -44,12 +49,14 @@ def get_DB_tables_ddl(db_path, data_tables):
 
 
 def get_units_per_table(
-    db_path,
-    columns_metadata_table_name,
-    units_map_table_name,
-    units_table_name,
-    index_table,
-):
+    db_path: str,
+    columns_metadata_table_name: str,
+    units_map_table_name: str,
+    units_table_name: str,
+    index_table: str,
+) -> dict:
+    """Returns the measurement units divided by table"""
+
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
@@ -73,7 +80,9 @@ def get_units_per_table(
     return meas_units
 
 
-def query_db_json(db_path, query):
+def query_db_json(db_path: str, query: str) -> str | None:
+    """Execute the query on the DB and return the results as a JSON string"""
+
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
@@ -93,7 +102,9 @@ def query_db_json(db_path, query):
     return json_response if result else None
 
 
-def get_data_list(db_path, table_name):
+def get_data_list(db_path: str, table_name: str) -> List[dict]:
+    """Get all the data from a table"""
+
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
 

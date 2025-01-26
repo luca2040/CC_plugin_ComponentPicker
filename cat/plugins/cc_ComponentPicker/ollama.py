@@ -3,7 +3,9 @@ import json
 
 
 class OllamaLLM:
-    def __init__(self, api_url, model, logger=None, keep_alive="10m"):
+    def __init__(self, api_url: str, model: str, logger=None, keep_alive="10m"):
+        """Ollama model object."""
+
         self.api_url = api_url
         self.model = model
         self.logger = logger
@@ -15,8 +17,9 @@ class OllamaLLM:
         if not model_downloaded:
             self._download_model()
 
-    def _log(self, string, type=0):
-        """type:
+    def _log(self, string: str, type=0):
+        """Log a message using self.logger
+        type:
         - 0: info
         - 1: error
         """
@@ -30,6 +33,8 @@ class OllamaLLM:
                 self.logger.error(string)
 
     def _download_model(self):
+        """Request to the ollama API to download the model."""
+
         try:
             self._log(f"Starting download of model: {self.model}")
 
@@ -65,7 +70,9 @@ class OllamaLLM:
         except Exception as e:
             self._log(f"Error downloading model: {e}", 1)
 
-    def _check_model(self):
+    def _check_model(self) -> bool:
+        """Checks using the ollama API if the model is already downloaded."""
+
         try:
             response = requests.get(f"{self.api_url}/tags")
 
@@ -83,7 +90,9 @@ class OllamaLLM:
             self._log(f"Error checking model: {e}", 1)
             return False
 
-    def load_model(self):
+    def load_model(self) -> bool:
+        """Loads the model into memory for the specified time (self.keep_alive)."""
+
         request = {"model": self.model, "keep_alive": self.keep_alive}
 
         try:
@@ -102,7 +111,9 @@ class OllamaLLM:
             self._log(f"Error loading model '{self.model}': {e}", 1)
             return False
 
-    def llm(self, query, format=None):
+    def llm(self, query: str, format=None) -> str:
+        """Make a request to the model, and make it respond following the specified format."""
+
         request = {
             "model": self.model,
             "messages": [{"role": "user", "content": query}],
