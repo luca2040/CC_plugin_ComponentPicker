@@ -88,7 +88,8 @@ def before_cat_recalls_procedural_memories(procedural_recall_config, cat):
 def component_info(input, cat):
     """Use this tool always when the user asks a question about electrical components (Active, passive, integrated circuits, ...), to find the characteristics, \
 to find some that meet some requirements, or to give a list of components.
-input is what the user requested, formatted in a complete and short way."""
+input is what the user requested, formatted in a complete and short way.
+REPLY USING MARKDOWN"""
 
     tables, (_, advanced_tables, unit_tables, use_units), structure = get_needed_tables(
         OLLAMA_LLM, input, DB_PATH, INDEX_TABLE

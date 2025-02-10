@@ -169,6 +169,6 @@ cc_vscode_debugpy/
 .vscode
 
 elastic/
-kibana/
+kibana/data/
 test/
 ollama/

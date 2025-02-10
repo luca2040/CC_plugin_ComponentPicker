@@ -98,10 +98,12 @@ services:
     depends_on:
       kibana_settings:
         condition: service_completed_successfully
-    image: docker.elastic.co/kibana/kibana:${ES_LOCAL_VERSION}
+    build:
+      context: ./kibana
+      dockerfile: Dockerfile
     container_name: ${KIBANA_LOCAL_CONTAINER_NAME}
     volumes:
-      - ./kibana:/usr/share/kibana/data
+      - ./kibana/data:/usr/share/kibana/data
     ports:
       - 127.0.0.1:${KIBANA_LOCAL_PORT}:5601
     environment:
