@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 import sqlite3
 import json
 
@@ -102,19 +102,52 @@ def query_db_json(db_path: str, query: str) -> str | None:
     return json_response if result else None
 
 
-def get_data_list(db_path: str, table_name: str) -> List[dict]:
-    """Get all the data from a table"""
-
+def get_data_list(db_path: str, table_name: str) -> List[Dict]:
+    """Get all the data from a table, reading foreign keys."""
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
-
     cursor = conn.cursor()
+
+    cursor.execute(f"PRAGMA foreign_key_list({table_name})")
+    foreign_keys = cursor.fetchall()
+
+    fk_mapping = {}
+    for fk in foreign_keys:
+        local_column = fk["from"]
+        referenced_table = fk["table"]
+        referenced_column = fk["to"]
+
+        if local_column.lower().endswith("_id"):
+            col_name = local_column[:-3]
+        else:
+            col_name = local_column
+
+        fk_mapping[local_column] = {
+            "table": referenced_table,
+            "ref_col": referenced_column,
+            "col_name": col_name,
+        }
 
     cursor.execute(f"SELECT * FROM {table_name}")
     rows = cursor.fetchall()
 
-    data = [dict(row) for row in rows]
+    results = []
+    for row in rows:
+        row_dict = dict(row)
+        for fk_column, ref_info in fk_mapping.items():
+            if fk_column in row_dict and row_dict[fk_column] is not None:
+                fk_id = row_dict[fk_column]
+                query = (
+                    f"SELECT {ref_info['col_name']} FROM {ref_info['table']} "
+                    f"WHERE {ref_info['ref_col']} = ?"
+                )
+                cursor.execute(query, (fk_id,))
+                ref_row = cursor.fetchone()
+
+                if ref_row:
+                    row_dict.pop(fk_column, None)
+                    row_dict[ref_info["col_name"]] = ref_row[ref_info["col_name"]]
+        results.append(row_dict)
 
     conn.close()
-
-    return data
+    return results
