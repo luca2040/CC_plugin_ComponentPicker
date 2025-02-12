@@ -20,6 +20,7 @@ The `index table` sets the table type for every table in the DB.
 |4    |Measurement units          |
 |5    |Normal data table          |
 |6    |Advanced search data table |
+|7    |Advanced table reference   |
 
 _The `Table function descriptions` table is only needed to describe what every table does, and does not get used in the search process._
 
@@ -139,18 +140,19 @@ volumes:
 ```.env
 ES_LOCAL_VERSION=8.17.0
 ES_LOCAL_CONTAINER_NAME=es-local-dev
-ES_LOCAL_PASSWORD= *Elasticsearch password*
+ES_LOCAL_PASSWORD=example
 ES_LOCAL_URL=http://localhost:9200
 ES_LOCAL_PORT=9200
 ES_LOCAL_HEAP_INIT=128m
 ES_LOCAL_HEAP_MAX=2g
 ES_LOCAL_DISK_SPACE_REQUIRED=1gb
-ES_CAT_KEY= *Elasticsearch API key*
+ES_LOCAL_API_KEY=key
+ES_CAT_KEY=key
 
 KIBANA_LOCAL_CONTAINER_NAME=kibana-local-dev
 KIBANA_LOCAL_PORT=5601
-KIBANA_LOCAL_PASSWORD= *Kibana password*
-KIBANA_ENCRYPTION_KEY= *Kibana key*
+KIBANA_LOCAL_PASSWORD=example
+KIBANA_ENCRYPTION_KEY=key
 
 CCAT_LOG_LEVEL=INFO
 CAT_DB_PATH=/app/cat/componentsDB/database.sqlite
