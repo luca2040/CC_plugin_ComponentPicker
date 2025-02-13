@@ -85,14 +85,14 @@ def before_cat_recalls_procedural_memories(procedural_recall_config, cat):
 
 
 @tool()
-def component_info(input, cat):
+def component_info(input_, cat):
     """Use this tool always when the user asks a question about electrical components (Active, passive, integrated circuits, ...), to find the characteristics, \
 to find some that meet some requirements, or to give a list of components.
 input is what the user requested, formatted in a complete and short way.
 REPLY USING MARKDOWN"""
 
     tables, (_, advanced_tables, unit_tables, use_units), structure = get_needed_tables(
-        OLLAMA_LLM, input, DB_PATH, INDEX_TABLE
+        OLLAMA_LLM, input_, DB_PATH, INDEX_TABLE
     )
     cat.send_ws_message(content=f"Selected tables:\n{tables}", msg_type="chat")
     if not tables:
@@ -102,7 +102,8 @@ REPLY USING MARKDOWN"""
 
     if advanced_search:
         es_query = get_elastic_query(OLLAMA_LLM, input)
-        cat.send_ws_message(content=f"Elastic query:\n{es_query}", msg_type="chat")
+        cat.send_ws_message(
+            content=f"Elastic query:\n{es_query}", msg_type="chat")
 
         es = Elasticsearch(ELASTIC_URL, api_key=os.environ["ELASTIC_KEY"])
 
